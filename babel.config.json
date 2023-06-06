@@ -1,0 +1,26 @@
+{
+  "presets": [
+    [
+      "@babel/preset-react",
+      {
+        //"pragma": "dom", // default pragma is React.createElement (only in classic runtime)
+        // "pragmaFrag": "DomFrag", // default is React.Fragment (only in classic runtime)
+        // "throwIfNamespace": false, // defaults to true
+        "runtime": "automatic" // defaults to classic
+        // "importSource": "custom-jsx-library" // defaults to react (only in automatic runtime)
+      }
+    ], [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "edge": "17",
+          "firefox": "60",
+          "chrome": "67",
+          "safari": "11.1"
+        },
+        "useBuiltIns": "usage",
+        "corejs": "3.6.5"
+      }
+    ]
+  ]
+}
