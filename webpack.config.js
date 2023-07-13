@@ -19,6 +19,9 @@ module.exports = (env) => {
     devServer: {
       port,
     },
+    resolve: {
+      extensions: ['.tsx', '.ts', '.js', 'jsx'],
+    },
     module: {
       rules: [
         {
@@ -32,7 +35,7 @@ module.exports = (env) => {
             "sass-loader",
           ],
         }, {
-          test: /\.m?(jsx|js)$/,
+          test: /\.m?(jsx|js|ts|tsx)$/,
           exclude: /node_modules/,
           use: {
             loader: "babel-loader",

@@ -1,8 +1,21 @@
-import React from 'react'
+import { Tabs } from '../shared/UIkit';
 
 function Index() {
+  const tabsData = [
+    {
+      label: "name of tab 1",
+      id: 'tab1'
+    },     {
+      label: "name of tab 2",
+      id: 'tab2'
+    },     {
+      label: "name of tab 3",
+      id: 'tab3'
+    },
+  ];
+
   return (
-    <div>helloy world</div>
+    <Tabs tabs={tabsData}/>
   )
 }
 
