@@ -1,0 +1,20 @@
+.tetris {
+  display: flex;
+  justify-content: center;
+  &__field {
+    border-left: 1px solid #ACACAC;
+    border-top: 1px solid #ACACAC;
+  }
+  &__row {
+    display: flex;
+  }
+  &__item {
+    background-color: rgba(35,155,216, 0.3);
+    padding: 14px;
+    border-bottom: 1px solid #ACACAC;
+    border-right: 1px solid #ACACAC;
+  }
+  &__item_full {
+    background-color: #50C878;
+  }
+}

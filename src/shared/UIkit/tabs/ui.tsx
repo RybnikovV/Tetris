@@ -2,7 +2,6 @@ import { FC } from "react";
 import classNames from "classnames";
 import "./tabs.scss";
 
-
 interface TabItem {
   label: string;
   disabled?: boolean;
@@ -28,7 +27,7 @@ const Tabs: FC<TabsProps> = ({
 
   return (
     <>
-      <div onClick={e => {console.log(e)}} className={classTabs}>
+      <div className={classTabs}>
         {tabs.map((i) => {
           return <div key={i.id} className={classTab}>
             {i.label}

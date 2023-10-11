@@ -20,7 +20,10 @@ module.exports = (env) => {
       port,
     },
     resolve: {
-      extensions: ['.tsx', '.ts', '.js', 'jsx'],
+      extensions: ['.jsx', '.tsx', '.ts', '.js'],
+      // alias: {},
+      // preferAbsolute: true,
+      // mainFiles: ['index']
     },
     module: {
       rules: [
