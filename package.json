@@ -9,6 +9,18 @@
     "dev": "webpack serve --config webpack.config.js --env mode=development",
     "test": "-"
   },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "-"
@@ -22,9 +34,9 @@
   "author": "Rybnikov_VV",
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.21.5",
-    "@babel/core": "^7.21.8",
-    "@babel/preset-env": "^7.21.5",
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.2",
+    "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.22.5",
     "@types/jest": "^29.5.3",
@@ -47,6 +59,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
+    "core-js": "^3.33.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.7",
