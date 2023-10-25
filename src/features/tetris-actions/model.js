@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getRandomNumber } from '../../shared/helpers';
+import { FIGURES, getBlock } from '../../entities/tetris-blocks';
+import { checkNextStep, addStepController, getFigureSize } from './helpers';
 
 const initialState = {
   field: null,
@@ -21,43 +23,55 @@ export const tetrisStateSlice = createSlice({
       }
       state.field = field
     },
-    addNewBlock: (state, {payload}) => {
+    addNewBlock: (state) => {
+      const figure = getBlock(FIGURES);
+      const { width, height } = getFigureSize(figure);
       const widthField = state.field[0].length - 1;
-      const coordinateX = getRandomNumber(0, widthField - 1);
-
-      payload.forEach((i, indexI) => {
-        i.forEach((j, indexJ) => {
-          state.field[indexJ][indexI + coordinateX] = j
-        })
-      });
+      const coordinateX = getRandomNumber(0, widthField - width);
       state.fallingBlock = {
-        figure: payload,
+        figure,
         coordinateX,
-        coordinateY: 0
+        coordinateY: 0,
+        previosCoordinateX: coordinateX,
+        previosCoordinateY: 0,
+        width,
+        height,
       }
     },
     stepDown: (state) => {
-      state.fallingBlock.coordinateY++;
+      state.fallingBlock.previosCoordinateY = state.fallingBlock.coordinateY++;
+      state.fallingBlock.previosCoordinateX = state.fallingBlock.coordinateX;
     },
     stepRight: (state) => {
-      state.fallingBlock.coordinateX++;
+      state.fallingBlock.previosCoordinateX = state.fallingBlock.coordinateX++;
+      state.fallingBlock.previosCoordinateY = state.fallingBlock.coordinateY;
     },
     stepLeft: (state) => {
-      state.fallingBlock.coordinateX--;
+      state.fallingBlock.previosCoordinateX = state.fallingBlock.coordinateX--;
+      state.fallingBlock.previosCoordinateY = state.fallingBlock.coordinateY;
     },
-    ternLeft: (state) => {
+    ternLeft : (state) => {
 
     },
     ternRight: (state) => {
 
     },
-    render: (state) => {
+    updateField: (state) => {
       const fallingBlock = state.fallingBlock;
+      const previosCoordinateX = fallingBlock.previosCoordinateX;
+      const previosCoordinateY = fallingBlock.previosCoordinateY;
       fallingBlock.figure.forEach((i, indexI) => {
         i.forEach((j, indexJ) => {
-          state.field[indexJ + fallingBlock.coordinateY][indexI + fallingBlock.coordinateX] = j
+          state.field[indexI + previosCoordinateY][indexJ + previosCoordinateX] = false
         })
-      })
+      });
+      fallingBlock.figure.forEach((i, indexI) => {
+        i.forEach((j, indexJ) => {
+          if(j) {
+            state.field[indexI + fallingBlock.coordinateY][indexJ + fallingBlock.coordinateX] = j
+          }
+        })
+      });
     },
     saveId: (state, {payload}) => {
       state.keyOfGameFunction = payload
@@ -66,19 +80,28 @@ export const tetrisStateSlice = createSlice({
 });
 
 export const gameStarting = () => {
-  return (dispatch) => {
-    const id = setInterval(() => {
-      dispatch(tetrisStateSlice.actions.stepDown())
-      dispatch(tetrisStateSlice.actions.render())
-    }, 2000)
-    dispatch(tetrisStateSlice.actions.saveId(id))
-  }
-}
-
-export const gameStop = () => {
   return (dispatch, getState) => {
+    const tetrisActions = tetrisStateSlice.actions;
+    !getState().tetris.fallingBlock && dispatch(tetrisActions.addNewBlock());
+    dispatch(tetrisActions.updateField());
+    addStepController(getState, dispatch, checkNextStep, tetrisActions)
     
+    const id = setInterval(() => {
+      if (checkNextStep(getState().tetris)) {
+        dispatch(tetrisActions.stepDown())
+      } else {
+        dispatch(tetrisActions.addNewBlock())
+      }
+      dispatch(tetrisActions.updateField())
+    }, 1000);
+    dispatch(tetrisActions.saveId(id));
   }
-}
+};
+
+// export const gameStop = () => {
+//   return (dispatch, getState) => {
+    
+//   }
+// }
 
 export default tetrisStateSlice.reducer;

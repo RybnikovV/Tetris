@@ -3,6 +3,6 @@ import { tetrisFieldReducer } from '../features/tetris-actions';
 
 export const store = configureStore({
   reducer: {
-    tetrisField: tetrisFieldReducer
+    tetris: tetrisFieldReducer
   }
 });
