@@ -1,3 +1,3 @@
-import tetrisFieldReducer, { tetrisStateSlice, gameStarting } from './model';
+import tetrisFieldReducer, { tetrisStateSlice, gameInitialisation } from './model';
 
-export { tetrisFieldReducer, tetrisStateSlice, gameStarting };
+export { tetrisFieldReducer, tetrisStateSlice, gameInitialisation };

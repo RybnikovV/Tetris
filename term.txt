@@ -40,3 +40,16 @@
     event.code и event.key
     event.repeat
     событие input
+
+29.10.23
+  react: Батчинг
+  
+11.11.23
+  манкипатчинг
+  https://learn.javascript.ru/advanced-functions -перечитать
+  https://learn.javascript.ru/closure -перечитать
+  Работа с прототипами:
+  Современные же методы это:
+    Object.create(proto, [descriptors]) – создаёт пустой объект со свойством [[Prototype]], указанным как proto, и необязательными дескрипторами свойств descriptors.
+    Object.getPrototypeOf(obj) – возвращает свойство [[Prototype]] объекта obj.
+    Object.setPrototypeOf(obj, proto) – устанавливает свойство [[Prototype]] объекта obj как proto.
