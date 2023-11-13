@@ -19,15 +19,33 @@ export const checkNextStep = (state, direction='bottom') => {
     });
   };
 
+  const checRightBlock = () => {
+    return !figure.find((axisY, indexAxisY) => {
+      const numLastIndex = axisY.findLastIndex(itexAxisY => {
+        return !!itexAxisY 
+      });
+      return axisY[numLastIndex] && field[indexAxisY + coordinateY][coordinateX + numLastIndex + 1];
+    });
+  };
+
+  const checkLeftBlock = () => {
+    return !figure.find((axisY, indexAxisY) => {
+      const numIndex = axisY.findIndex(itexAxisY => {
+        return !!itexAxisY 
+      });
+      return axisY[numIndex] && field[indexAxisY + coordinateY][coordinateX + numIndex - 1];
+    });
+  };
+
   switch (direction) {
     case 'bottom': {
       return checkEndField() && checkBottomBlock()
     }
     case 'right': {
-      return typeof state.field[coordinateY][coordinateX + blockWidth] !== 'undefined'
+      return typeof state.field[coordinateY][coordinateX + blockWidth] !== 'undefined' && checRightBlock()
     }
     case 'left': {
-      return typeof state.field[coordinateY + 3][coordinateX - 1] !== 'undefined'
+      return typeof state.field[coordinateY][coordinateX - 1] !== 'undefined' && checkLeftBlock()
     }
   }
 }
