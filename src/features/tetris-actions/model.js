@@ -25,17 +25,19 @@ export const tetrisStateSlice = createSlice({
       state.field = field
     },
     addNewBlock: (state) => {
-      const figure = getBlock(FIGURES);
+      const { figure, currentFigurePosition, figurePositions } = getBlock(FIGURES);
       const { width, height } = getFigureSize(figure);
       const widthField = state.field[0].length - 1;
       const coordinateX = getRandomNumber(0, widthField - width);
       state.fallingBlock = {
         figure,
+        currentFigurePosition,
+        previosFigure: null,
+        figurePositions,
         coordinateX,
         coordinateY: 0,
         previosCoordinateX: coordinateX,
         previosCoordinateY: 0,
-        previosBlockState: null,
         width,
         height,
       }
@@ -53,33 +55,21 @@ export const tetrisStateSlice = createSlice({
       state.fallingBlock.previosCoordinateY = state.fallingBlock.coordinateY;
     },
     tern: (state) => {
-      const {figure, height, width} = state.fallingBlock
-      if (width !== height) {
-        state.fallingBlock.previosBlockState = state.fallingBlock.figure;
-        if (width > height) {
-          state.fallingBlock.figure = figure.reduce((ternedFigure, figureLayer, i) => {
-            ternedFigure = ternedFigure.length === 0 
-              ? Array.from({length: width}, () => [])
-              : ternedFigure;
-            figureLayer.forEach((figureItem, j) => {
-              ternedFigure[j][i] = figureItem
-            });
-            return ternedFigure;
-          }, [])
-        } else {
-          state.fallingBlock.figure = figure.reduce((ternedFigure, figureLayer) => {
-            ternedFigure = ternedFigure.length === 0 
-              ? Array.from({length: width}, () => [])
-              : ternedFigure;
-            figureLayer.forEach((figureItem, j) => {
-              ternedFigure[j].push(figureItem)
-            });
-            return ternedFigure;
-          }, [])
-        };
-        state.fallingBlock.height = width;
-        state.fallingBlock.width = height;
-      }
+      const fallingBlock = state.fallingBlock;
+      const { currentFigurePosition, figurePositions, figure } = fallingBlock;
+      const figurePositionsLength = figurePositions.length;
+
+      fallingBlock.previosFigure = figure;
+      fallingBlock.currentFigurePosition = 
+        currentFigurePosition +1 !== figurePositionsLength ? 
+        fallingBlock.currentFigurePosition = currentFigurePosition + 1 :
+        fallingBlock.currentFigurePosition = 0;
+      fallingBlock.figure = figurePositions[state.fallingBlock.currentFigurePosition];
+      const { width, height } = getFigureSize(state.fallingBlock.figure);
+      fallingBlock.width = width;
+      fallingBlock.height = height;
+      fallingBlock.previosCoordinateX = fallingBlock.coordinateX;
+      fallingBlock.previosCoordinateY = fallingBlock.coordinateY;
     },
     updateField: (state) => {
       const { 
@@ -88,10 +78,10 @@ export const tetrisStateSlice = createSlice({
         figure,
         coordinateX,
         coordinateY,
-        previosBlockState
+        previosFigure,
       } = state.fallingBlock;
-      const deletedFigure = previosBlockState || figure;
-      state.fallingBlock.previosBlockState = null;
+      const deletedFigure = previosFigure || figure;
+      state.fallingBlock.previosFigure = null;
       deletedFigure.forEach((i, indexI) => {
         i.forEach((j, indexJ) => {
           if(j) {

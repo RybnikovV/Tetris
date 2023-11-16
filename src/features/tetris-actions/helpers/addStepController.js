@@ -7,24 +7,20 @@ export function addStepController(getState, dispatch, checkNextStep, tetrisActio
       case 'ArrowRight':
         if (checkNextStep(getState().tetris, 'right')) {
           dispatch(tetrisActions.stepRight());
-          dispatch(tetrisActions.updateField());
         }
         break;
       case 'ArrowLeft':
         if (checkNextStep(getState().tetris, 'left')) {
           dispatch(tetrisActions.stepLeft());
-          dispatch(tetrisActions.updateField());
         }
         break;
       case 'ArrowDown':
         if (checkNextStep(getState().tetris)) {
-          dispatch(tetrisActions.stepDown());
-          dispatch(tetrisActions.updateField());
+          dispatch(tetrisActions.stepDown())
         }
         break;
       case 'ArrowUp': 
         dispatch(tetrisActions.tern());
-        dispatch(tetrisActions.updateField());
         break;
       case 'Space':
         if (getState().tetris.keyOfGameFunction) {
@@ -35,5 +31,6 @@ export function addStepController(getState, dispatch, checkNextStep, tetrisActio
       default:
         return
     }
+    dispatch(tetrisActions.updateField());
   }) 
 }
