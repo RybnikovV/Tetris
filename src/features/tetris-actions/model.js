@@ -2,12 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import { getRandomNumber } from '../../shared/helpers';
 import { FIGURES, getBlock } from '../../entities/tetris-blocks';
 import { tetrisFieldSize } from '../../entities/tetris-field';
-import { checkNextStep, addStepController, getFigureSize } from './helpers';
+import { checkNextStep, addStepController, getFigureSize, checkFilledAxis } from './helpers';
 
 const initialState = {
   field: null,
+  filledAxisList: [],
   fallingBlock: null,
   keyOfGameFunction: null,
+  gamePoints: 0,
 };
 
 export const tetrisStateSlice = createSlice({
@@ -104,8 +106,40 @@ export const tetrisStateSlice = createSlice({
       state.keyOfGameFunction = null;
     },
     gameStop: (state) => {
-      state.keyOfGameFunction
-    }
+      state.keyOfGameFunction;
+    },
+    updateListOfFilledAxis: (state, {payload}) => {
+      state.filledAxisList = payload;
+    },
+    updateGamePoints: (state, {payload}) => {
+      const { field, gamePoints } = state;
+      const baseStep = field[0].length;
+      state.gamePoints = payload * baseStep + gamePoints
+    },
+    clearFieldLine: (state, {payload}) => {
+      payload.forEach(i => {
+        state.field[i] = state.field[i].map(() => {
+          return false
+        })
+      });
+    },
+    shakeField: (state, {payload}) => {
+      const line = [];
+      payload.sort((a, b) => {
+        if (a < b) return 1;
+        if (a == b) return 0;
+        if (a > b) return -1;
+      });
+      for(let i = 0; i <10; i++){
+        line.push(false);
+      };
+      payload.forEach(i => {
+        while(i >= 0) {
+          state.field[i] = state.field[i-1] ? state.field[i-1] : line
+          i--;
+        };
+      });
+    },
   }
 });
 
@@ -116,7 +150,6 @@ export const gameInitialisation = () => {
     //Создание поля, добавленеи фигуры
     dispatch(generateField(tetrisFieldSize));
     dispatch(addNewBlock());
-    // !getState().tetris.fallingBlock && dispatch(tetrisActions.addNewBlock());
     dispatch(updateField());
     //Конец создания поля, добавленеи фигуры
     addStepController(getState, dispatch, checkNextStep, tetrisActions)
@@ -129,11 +162,16 @@ export const gameStart = () => {
     const tetrisActions = tetrisStateSlice.actions;
     const id = setInterval(() => {
       if (checkNextStep(getState().tetris)) {
-        dispatch(tetrisActions.stepDown())
+        dispatch(tetrisActions.stepDown());
       } else {
-        dispatch(tetrisActions.addNewBlock())
+        const { hasFilledAxis, indexFilledAxes } = checkFilledAxis(getState().tetris);
+        if (hasFilledAxis) {
+          filledAxisHandler(indexFilledAxes, dispatch);
+        } else {
+          dispatch(tetrisActions.addNewBlock());
+        }
       }
-      dispatch(tetrisActions.updateField())
+      dispatch(tetrisActions.updateField());
     }, 1000);
     dispatch(tetrisActions.saveId(id)); 
   }
@@ -143,6 +181,22 @@ export const gameStop = (dispatch, getState) => {
   const tetrisActions = tetrisStateSlice.actions;
   clearInterval(getState().tetris.keyOfGameFunction)
   dispatch(tetrisActions.clearId())
+}
+
+export const filledAxisHandler = (indexFilledAxes, dispatch) => {
+  const {
+    updateListOfFilledAxis, 
+    clearFieldLine, 
+    updateGamePoints, 
+    shakeField } = tetrisStateSlice.actions;
+  const coefficient = indexFilledAxes.length;
+  dispatch(updateListOfFilledAxis(indexFilledAxes));
+  dispatch(updateGamePoints(coefficient));
+  setTimeout(() => {
+    dispatch(clearFieldLine(indexFilledAxes));
+    dispatch(shakeField(indexFilledAxes));
+    dispatch(updateListOfFilledAxis([]));
+  }, 500)
 }
 
 export default tetrisStateSlice.reducer;

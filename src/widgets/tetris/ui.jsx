@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const Tetris = () => {
   const dispatch = useDispatch();
-  const { field } = useSelector(state => state.tetris);
+  const { field, filledAxisList, gamePoints } = useSelector(state => state.tetris);
 
   useEffect(() => {
     dispatch(gameInitialisation());
@@ -13,7 +13,9 @@ const Tetris = () => {
 
   return (
     <TetrisField
-      field={field}/>
+      gamePoints={gamePoints}
+      field={field}
+      filledAxisList={filledAxisList}/>
   )
 }
 
