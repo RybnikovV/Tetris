@@ -8,6 +8,7 @@ export const checkNextStep = (state, direction='bottom') => {
   const checkEndField = () => {
     return typeof state.field[coordinateY + blockHeight] !== 'undefined'
   };
+
   const checkBottomBlock = () => {
     return !figure.find((axisY, indexAxisY) => {
       return axisY.find((itemX, indexX) => {
@@ -47,5 +48,24 @@ export const checkNextStep = (state, direction='bottom') => {
     case 'left': {
       return typeof state.field[coordinateY][coordinateX - 1] !== 'undefined' && checkLeftBlock()
     }
+  }
+};
+
+export const checkFilledAxis = (state) => {
+  const { field } = state;
+  const indexFilledAxes = [];
+
+  field.forEach((axis, indexAxis) => {
+    const isAxisFilled = axis.reduce((res, block) => {
+      return res && block
+    }, true);
+    if ( isAxisFilled ) {
+      indexFilledAxes.push(indexAxis);
+    }
+  });
+
+  return {
+    hasFilledAxis: indexFilledAxes.length > 0,
+    indexFilledAxes
   }
 }

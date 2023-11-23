@@ -1,7 +1,8 @@
-const visualasingField = (field) => {
+const visualasingField = ({ field, filledAxisList }) => {
   return field.map((i, indexI) => {
+    const isFilled = filledAxisList.find(rowIndex => rowIndex === indexI);
     return <div 
-      className='tetris__row' 
+      className={isFilled ? 'tetris__row tetris__row_filled' : 'tetris__row'}
       key={`${indexI}`}>
       {
         i.map((j, indexJ) => {
