@@ -1,1 +1,0 @@
-export type GetRandomNumber =  ( max: number, min: number, onlyInteger: boolean) => number

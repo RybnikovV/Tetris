@@ -1,1 +1,0 @@
-export { getRandomNumber } from './getRandomNumber/getRandonNumber'
