@@ -19,8 +19,10 @@ export function addStepController(getState, dispatch, checkNextStep, tetrisActio
           dispatch(tetrisActions.stepDown())
         }
         break;
-      case 'ArrowUp': 
-        dispatch(tetrisActions.tern());
+      case 'ArrowUp':
+        if (checkNextStep(getState().tetris, 'tern')) {
+          dispatch(tetrisActions.tern());
+        }
         break;
       case 'Space':
         if (getState().tetris.keyOfGameFunction) {
