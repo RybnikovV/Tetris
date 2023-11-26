@@ -10,6 +10,7 @@ const initialState = {
   fallingBlock: null,
   keyOfGameFunction: null,
   gamePoints: 0,
+  gameSpeed: 1000,
 };
 
 export const tetrisStateSlice = createSlice({
@@ -108,6 +109,11 @@ export const tetrisStateSlice = createSlice({
     gameStop: (state) => {
       state.keyOfGameFunction;
     },
+    changeGameSpeed: (state) => {
+      if(state.gameSpeed > 200) {
+        state.gameSpeed = state.gameSpeed - 100;
+      }
+    },
     updateListOfFilledAxis: (state, {payload}) => {
       state.filledAxisList = payload;
     },
@@ -125,12 +131,7 @@ export const tetrisStateSlice = createSlice({
     },
     shakeField: (state, {payload}) => {
       const line = [];
-      payload.sort((a, b) => {
-        if (a < b) return 1;
-        if (a == b) return 0;
-        if (a > b) return -1;
-      });
-      for(let i = 0; i <10; i++){
+      for(let i = 0; i < 10; i++) {
         line.push(false);
       };
       payload.forEach(i => {
@@ -166,29 +167,37 @@ export const gameStart = () => {
       } else {
         const { hasFilledAxis, indexFilledAxes } = checkFilledAxis(getState().tetris);
         if (hasFilledAxis) {
-          filledAxisHandler(indexFilledAxes, dispatch);
+          filledAxisHandler(indexFilledAxes, dispatch, getState);
         } else {
           dispatch(tetrisActions.addNewBlock());
         }
       }
       dispatch(tetrisActions.updateField());
-    }, 1000);
+    }, getState().tetris.gameSpeed);
     dispatch(tetrisActions.saveId(id)); 
   }
 };
 
 export const gameStop = (dispatch, getState) => {
   const tetrisActions = tetrisStateSlice.actions;
-  clearInterval(getState().tetris.keyOfGameFunction)
-  dispatch(tetrisActions.clearId())
-}
+  clearInterval(getState().tetris.keyOfGameFunction);
+  dispatch(tetrisActions.clearId());
+};
 
-export const filledAxisHandler = (indexFilledAxes, dispatch) => {
+const updateGameSpeed = (dispatch, getState) => {
+  const tetrisActions = tetrisStateSlice.actions;
+  gameStop(dispatch, getState);
+  dispatch(tetrisActions.clearId());
+  dispatch(gameStart());
+};
+
+export const filledAxisHandler = (indexFilledAxes, dispatch, getState) => {
   const {
     updateListOfFilledAxis, 
     clearFieldLine, 
     updateGamePoints, 
-    shakeField } = tetrisStateSlice.actions;
+    shakeField,
+    changeGameSpeed } = tetrisStateSlice.actions;
   const coefficient = indexFilledAxes.length;
   dispatch(updateListOfFilledAxis(indexFilledAxes));
   dispatch(updateGamePoints(coefficient));
@@ -196,7 +205,9 @@ export const filledAxisHandler = (indexFilledAxes, dispatch) => {
     dispatch(clearFieldLine(indexFilledAxes));
     dispatch(shakeField(indexFilledAxes));
     dispatch(updateListOfFilledAxis([]));
+    dispatch(changeGameSpeed());
+    updateGameSpeed(dispatch, getState)
   }, 500)
-}
+};
 
 export default tetrisStateSlice.reducer;

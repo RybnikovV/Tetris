@@ -1,7 +1,13 @@
 export const checkNextStep = (state, direction='bottom') => {
   if (!state.fallingBlock) return false;
-  const { fallingBlock, field } = state;
-  const  { coordinateX, coordinateY, figure } = fallingBlock;
+  const { fallingBlock, field} = state;
+  const  { 
+    coordinateX, 
+    coordinateY, 
+    figure, 
+    currentFigurePosition,
+    figurePositions,
+  } = fallingBlock;
   const blockHeight = fallingBlock.height;
   const blockWidth = fallingBlock.width;
 
@@ -38,6 +44,20 @@ export const checkNextStep = (state, direction='bottom') => {
     });
   };
 
+  const checkTern = () => {
+    const figurePositionsLength = figurePositions.length;
+    const nextFigurePosition = currentFigurePosition +1 !== figurePositionsLength ? 
+      figurePositions[currentFigurePosition + 1] : figurePositions[0];
+    return !nextFigurePosition.find((axisY, indexY) => {
+      return axisY.find((blockItem, indexX) => {
+        if (typeof field[coordinateY + indexY] === 'undefined' 
+          || typeof field[coordinateY + indexY][coordinateX + indexX] === 'undefined') {
+          return true
+        };
+      });
+    });
+  };
+
   switch (direction) {
     case 'bottom': {
       return checkEndField() && checkBottomBlock()
@@ -47,6 +67,9 @@ export const checkNextStep = (state, direction='bottom') => {
     }
     case 'left': {
       return typeof state.field[coordinateY][coordinateX - 1] !== 'undefined' && checkLeftBlock()
+    }
+    case 'tern': {
+      return checkTern()
     }
   }
 };
