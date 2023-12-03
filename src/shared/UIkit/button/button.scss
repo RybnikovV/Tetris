@@ -1,0 +1,30 @@
+.btn {
+  font-size: 14px;
+  height: 32px;
+  padding: 4px 15px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  &:hover {
+    opacity: .8;
+  }
+  &_primary {
+    background-color: #1677ff;
+    color: white;
+  }
+  &_text {
+    color: white;
+  }
+  &_default {
+    border: 1px solid #d9d9d9;
+    color: white;
+  }
+  &_disabled {
+    opacity: .5;
+    cursor: default;
+  }
+  &_disabled:hover {
+    opacity: .5;
+  }
+}

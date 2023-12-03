@@ -2,14 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 import { getRandomNumber } from '../../shared/helpers';
 import { FIGURES, getBlock } from '../../entities/tetris-blocks';
 import { tetrisFieldSize } from '../../entities/tetris-field';
-import { checkNextStep, addStepController, getFigureSize, checkFilledAxis } from './helpers';
+import { checkNextStep, 
+  addStepController,
+  getFigureSize,
+  checkFilledAxis,
+  timer, } from './helpers';
+import { createSelector } from '@reduxjs/toolkit';
 
 const initialState = {
   field: null,
   filledAxisList: [],
   fallingBlock: null,
+  //используется как индиктор процесса игры
   keyOfGameFunction: null,
+  keyOfTimer: null,
   gamePoints: 0,
+  gameTime: 0,
   gameSpeed: 1000,
 };
 
@@ -106,6 +114,12 @@ export const tetrisStateSlice = createSlice({
     clearId: (state) => {
       state.keyOfGameFunction = null;
     },
+    saveTimerId: (state, {payload}) => {
+      state.keyOfTimer = payload;
+    },
+    resetTimerId: (state) => {
+      state.keyOfTimer = null;
+    },
     gameStop: (state) => {
       state.keyOfGameFunction;
     },
@@ -141,6 +155,12 @@ export const tetrisStateSlice = createSlice({
         };
       });
     },
+    timerTick: (state) => {
+      state.gameTime = state.gameTime + 1;
+    },
+    resetTimer: (state) => {
+      state.gameTime = 0;
+    },
   }
 });
 
@@ -149,7 +169,7 @@ export const gameInitialisation = () => {
     const tetrisActions = tetrisStateSlice.actions;
     const {addNewBlock, updateField, generateField} = tetrisActions;
     //Создание поля, добавленеи фигуры
-    dispatch(generateField(tetrisFieldSize));
+    // dispatch(generateField(tetrisFieldSize));
     dispatch(addNewBlock());
     dispatch(updateField());
     //Конец создания поля, добавленеи фигуры
@@ -174,6 +194,7 @@ export const gameStart = () => {
       }
       dispatch(tetrisActions.updateField());
     }, getState().tetris.gameSpeed);
+    timer(dispatch, tetrisStateSlice.actions);
     dispatch(tetrisActions.saveId(id)); 
   }
 };
@@ -181,7 +202,9 @@ export const gameStart = () => {
 export const gameStop = (dispatch, getState) => {
   const tetrisActions = tetrisStateSlice.actions;
   clearInterval(getState().tetris.keyOfGameFunction);
+  clearInterval(getState().tetris.keyOfTimer);
   dispatch(tetrisActions.clearId());
+  dispatch(tetrisActions.resetTimerId())
 };
 
 const updateGameSpeed = (dispatch, getState) => {
@@ -209,5 +232,28 @@ export const filledAxisHandler = (indexFilledAxes, dispatch, getState) => {
     updateGameSpeed(dispatch, getState)
   }, 500)
 };
+
+export const getGameInfo = createSelector(
+  state => state.tetris.gamePoints,
+  state => state.tetris.gameTime,
+  (gamePoints, gameTime) => {
+    const minutes = Math.trunc(gameTime/60);
+    const seconds = gameTime - (minutes * 60);
+    return [
+      {
+        title: 'Счет',
+        value: gamePoints
+      }, {
+        title: 'Время игры',
+        value: `${minutes} : ${seconds}`
+      }, {
+        title: 'Уровень',
+        value: null
+      }, {
+        title: 'Лучший счет',
+        value: null
+      }
+    ]
+});
 
 export default tetrisStateSlice.reducer;

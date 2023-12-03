@@ -1,9 +1,27 @@
+import { useState } from 'react';
 import { Tetris } from '../../widgets/tetris';
+import { Button, BtnTypes, Modal } from '../../shared/UIkit';
 
 const TetrisPage = () => {
-  return (
-    <Tetris/>
-  )
-}
+  const [isModalOpen, setModalOpen] = useState(false);
 
-export default TetrisPage
+  const clickBtnHandler = () => {
+    setModalOpen(!isModalOpen)
+  };
+
+  return (
+    <>
+      <Tetris/>
+      {/* <Button
+        onClick={clickBtnHandler}
+        type={BtnTypes.default}>
+          Открыть модалку
+      </Button> */}
+      <Modal isModalOpen={isModalOpen} onClose={setModalOpen}>
+        <div>exampleOfContent</div>
+      </Modal>
+    </>
+  )
+};
+
+export default TetrisPage;
