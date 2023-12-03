@@ -1,5 +1,6 @@
 import { addStepController } from './addStepController';
 import { checkNextStep, checkFilledAxis } from './checkNextStep';
-import {  getFigureSize } from './getFigureSize';
+import { getFigureSize } from './getFigureSize';
+import { timer } from './timer';
 
-export { checkNextStep, addStepController, getFigureSize, checkFilledAxis };
+export { checkNextStep, addStepController, getFigureSize, checkFilledAxis, timer };
