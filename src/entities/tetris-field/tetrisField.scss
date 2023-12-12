@@ -1,8 +1,11 @@
 @keyframes shake {
   from {transform: translateX(0px)}
-  23% {transform: translateX(5px)}
-  46% {transform: translateX(0px)}
-  69% {transform: translateX(-5px)}
+  13% {transform: translateX(3px)}
+  25% {transform: translateX(0px)}
+  38% {transform: translateX(-3px)}
+  51% {transform: translateX(3px)}
+  64% {transform: translateX(0px)}
+  78% {transform: translateX(-3px)}
   to {transform: translateX(0px)}
 }
 
@@ -10,14 +13,13 @@
   display: flex;
   justify-content: center;
   &__field {
-    border-left: 1px solid #ACACAC;
     border-top: 1px solid #ACACAC;
   }
   &__row {
     display: flex;
   }
   &__row_filled {
-    animation: shake 0.5s infinite ease-in;
+    animation: shake 0.5s infinite ease-out;
   }
   &__gamePoints {
     color: wheat;
@@ -27,6 +29,9 @@
     padding: 14px;
     border-bottom: 1px solid #ACACAC;
     border-right: 1px solid #ACACAC;
+  }
+  &__item:first-child {
+    border-left: 1px solid #ACACAC;
   }
   &__item_full {
     background-color: #50C878;

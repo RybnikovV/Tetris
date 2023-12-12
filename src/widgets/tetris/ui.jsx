@@ -9,14 +9,16 @@ const Tetris = () => {
   const dispatch = useDispatch();
   const { field, filledAxisList, keyOfGameFunction } = useSelector(state => state.tetris);
   const gameInfo = useSelector(state => getGameInfo(state));
-  const {generateField} = tetrisStateSlice.actions;
+  const {generateField, updateMaxGamePoints} = tetrisStateSlice.actions;
 
   const startClickHandler = () => {
     dispatch(gameInitialisation());
   };
 
   useEffect(() => {
+    const maxPoints = localStorage.getItem('maxPoints');
     dispatch(generateField(tetrisFieldSize));
+    dispatch(updateMaxGamePoints(maxPoints ?? 0))
   }, []);
 
   return (

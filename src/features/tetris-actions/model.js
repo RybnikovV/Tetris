@@ -17,6 +17,7 @@ const initialState = {
   keyOfGameFunction: null,
   keyOfTimer: null,
   gamePoints: 0,
+  maxGamePoints: 0,
   gameTime: 0,
   gameSpeed: 1000,
 };
@@ -134,7 +135,10 @@ export const tetrisStateSlice = createSlice({
     updateGamePoints: (state, {payload}) => {
       const { field, gamePoints } = state;
       const baseStep = field[0].length;
-      state.gamePoints = payload * baseStep + gamePoints
+      state.gamePoints = payload * baseStep + gamePoints;
+    },
+    updateMaxGamePoints: (state, {payload}) => {
+      state.maxGamePoints = payload;
     },
     clearFieldLine: (state, {payload}) => {
       payload.forEach(i => {
@@ -218,12 +222,18 @@ export const filledAxisHandler = (indexFilledAxes, dispatch, getState) => {
   const {
     updateListOfFilledAxis, 
     clearFieldLine, 
-    updateGamePoints, 
+    updateGamePoints,
+    updateMaxGamePoints,
     shakeField,
     changeGameSpeed } = tetrisStateSlice.actions;
   const coefficient = indexFilledAxes.length;
   dispatch(updateListOfFilledAxis(indexFilledAxes));
   dispatch(updateGamePoints(coefficient));
+  const tetrisState = getState().tetris;
+  if (tetrisState.maxGamePoints < tetrisState.gamePoints) {
+    localStorage.setItem('maxPoints', tetrisState.gamePoints);
+    dispatch(updateMaxGamePoints(tetrisState.gamePoints));
+  };
   setTimeout(() => {
     dispatch(clearFieldLine(indexFilledAxes));
     dispatch(shakeField(indexFilledAxes));
@@ -236,7 +246,8 @@ export const filledAxisHandler = (indexFilledAxes, dispatch, getState) => {
 export const getGameInfo = createSelector(
   state => state.tetris.gamePoints,
   state => state.tetris.gameTime,
-  (gamePoints, gameTime) => {
+  state => state.tetris.maxGamePoints,
+  (gamePoints, gameTime, maxGamePoints) => {
     const minutes = Math.trunc(gameTime/60);
     const seconds = gameTime - (minutes * 60);
     return [
@@ -251,7 +262,7 @@ export const getGameInfo = createSelector(
         value: null
       }, {
         title: 'Лучший счет',
-        value: null
+        value: maxGamePoints
       }
     ]
 });

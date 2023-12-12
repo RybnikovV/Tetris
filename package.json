@@ -7,7 +7,7 @@
     "build:prod": "webpack --config webpack.config.js --env mode=production",
     "build:dev": "webpack --config webpack.config.js --env mode=development",
     "dev": "webpack serve --config webpack.config.js --env mode=development",
-    "test": "-"
+    "test": "jest"
   },
   "browserslist": {
     "production": [

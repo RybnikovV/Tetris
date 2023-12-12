@@ -53,3 +53,35 @@
     Object.create(proto, [descriptors]) – создаёт пустой объект со свойством [[Prototype]], указанным как proto, и необязательными дескрипторами свойств descriptors.
     Object.getPrototypeOf(obj) – возвращает свойство [[Prototype]] объекта obj.
     Object.setPrototypeOf(obj, proto) – устанавливает свойство [[Prototype]] объекта obj как proto.
+
+06.12.23
+  События жизненного цикла react
+    -Сборка (mounting)
+    -Обновление (updating)
+    -Разборка (unmounting)
+    Legacy или устаревший код
+
+useLayoutEffect(setup, dependencies?)
+Оператор нулевого слияния (??)
+
+07.12.23
+Об тестировании
+  виды тестирования
+    Виды функционального
+      e2e - должен занимать наименьшее кол-во тестов(10%)
+      integration - промежуточный обьем(20-30%)
+      unit - наибольшее кол-во тестов(к 100%)
+    Виды нефункиональных тестов 
+      скриншотные тесты(70-80%)
+      нагрузочные
+      регрессионное тестирование
+
+
+  инструменты
+    jest
+    react-testing-library
+    webdriverIO
+    storybook + loki
+  
+  Термины
+    регрессионое тестирование
